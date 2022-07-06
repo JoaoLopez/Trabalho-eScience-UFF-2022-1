@@ -13,7 +13,7 @@ class Hash():
         self.__tempos = {}
     
     def calcular_hash(self, codigo):
-        tempo = timeit.timeit(lambda: self.__funcao_hash(codigo), number=1000, globals=globals())
+        tempo = timeit.timeit(lambda: self.__funcao_hash(codigo), number=1, globals=globals())
         tam = len(codigo)
         if(tam in self.__tempos):
             self.__tempos[tam].append(tempo)
@@ -33,9 +33,18 @@ class Hash():
 
     def salvar_dados(self, filename):
         with open(filename, "w") as arq:
-            arq.write("Tempos: {0}\n\n".format(self.__tempos))
-            arq.write("Histórico: {0}\n\n".format(self.__hist))
-            arq.write("Colisões: {0}\n\n".format(self.__colisoes))
+            arq.write("Tempos: {\n")
+            for chave in self.__tempos:
+                arq.write("{0}:{1}\n".format(chave, self.__tempos[chave]))
+            arq.write("}\n\n")
+            arq.write("Histórico: {\n")
+            for chave in self.__hist:
+                arq.write("{0}:{1}\n".format(chave, self.__hist[chave]))
+            arq.write("}\n\n")
+            arq.write("Colisões: {\n")
+            for chave in self.__colisoes:
+                arq.write("{0}:{1}\n".format(chave, self.__colisoes[chave]))
+            arq.write("}\n\n")
             arq.write("Qtd Colisões: {0}".format(self.__qtd_colisoes))
     
     @property
@@ -82,17 +91,18 @@ h_xxhash = Hash(f_xxhash) #XXHASH
 h_md5 = Hash(f_md5)       #MD5
 
 #Obtendo os códigos das funções que calcularemos o hash
-funcoes = []
+funcoes = set()
 arquivos = [join("entrada", f) for f in listdir("entrada") if isfile(join("entrada", f))]
 for arq in arquivos:
     with open(arq, "r") as a:
         func = ""
         for linha in a.readlines():
             if(linha.startswith("def ")):
-                funcoes.append(func)
+                funcoes.add(func)
                 func = ""
             else:
                 func += linha
+funcoes.discard("")
 
 print(len(funcoes))
 
@@ -115,7 +125,8 @@ for i in range(1, len(funcoes)+1):
         ####################print(codigo)
         j += 1
         print(j)
-    if(j == 104): break
+        if(j == 10000): break
+    if(j == 10000): break
 
 h_crc32.salvar_dados("saida/CRC32.txt")
 h_murmur.salvar_dados("saida/MURMUR.txt")
