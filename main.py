@@ -3,6 +3,7 @@ from os.path import isfile, join
 from itertools import combinations
 import timeit, time
 import hashlib, zlib, mmh3, xxhash
+import statistics
 
 class Hash():
     def __init__(self, funcao_hash):
@@ -32,8 +33,15 @@ class Hash():
         with open(filename, "w") as arq:
             arq.write("Tempos: {\n")
             for chave in self.__tempos:
-                arq.write("{0}:{1}\n".format(chave, self.__tempos[chave]))
+                arq.write("{0}:{1}\n".format(chave, statistics.mean(self.__tempos[chave])))
             arq.write("}\n\n")
+            tempo_medio = 0
+            pesos = 0
+            for chave in self.__tempos:
+                tempo_medio += chave*statistics.mean(self.__tempos[chave])
+                pesos += chave
+            tempo_medio = tempo_medio/pesos
+            arq.write("Tempo médio por caracter: {0}\n\n".format(tempo_medio))
             arq.write("Histórico: {\n")
             for item in self.__hist:
                 arq.write("{0}\n".format(item))
