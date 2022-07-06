@@ -1,7 +1,7 @@
 from os import listdir
 from os.path import isfile, join
 from itertools import combinations
-import timeit
+import timeit, time
 import hashlib, zlib, mmh3, xxhash
 
 class Hash():
@@ -108,8 +108,8 @@ print(len(funcoes))
 #Realizando todas as combinações possíveis com a funções da entrada
 #e gerando os hashes dessas combinações.
 
-j = 0
-
+num_comb = 1000000
+start = time.time()
 for i in range(1, len(funcoes)+1):
     for combin in combinations(funcoes, i):
         codigo = "".join(combin)
@@ -119,11 +119,21 @@ for i in range(1, len(funcoes)+1):
         h_xxhash.calcular_hash(codigo)
         h_md5.calcular_hash(codigo)
 
-        ####################print(codigo)
-        j += 1
-        print(j)
-        if(j == 10000): break
-    if(j == 10000): break
+        num_comb -= 1
+        if(num_comb == 0):
+            break
+
+        end = time.time()
+        if(end - start >= 600):
+            h_crc32.salvar_dados("saida/CRC32.txt")
+            h_murmur.salvar_dados("saida/MURMUR.txt")
+            h_djb2.salvar_dados("saida/DJB2.txt")
+            h_xxhash.salvar_dados("saida/XXHASH.txt")
+            h_md5.salvar_dados("saida/MD5.txt")
+            start = time.time()
+    
+    if(num_comb == 0):
+        break
 
 h_crc32.salvar_dados("saida/CRC32.txt")
 h_murmur.salvar_dados("saida/MURMUR.txt")
