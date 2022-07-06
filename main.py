@@ -109,13 +109,12 @@ for arq in arquivos:
                 func += linha
 funcoes.discard("")
 
-print(len(funcoes))
 
-###################funcoes = ["a", "b", "c"]
+print("Número de funções encontradas:", len(funcoes))
+print("Número total de combinações possíveis:", 2**len(funcoes) - 1)
 
-#Realizando todas as combinações possíveis com a funções da entrada
+#Realizando as "num_comb" primeiras combinações possíveis com a funções da entrada
 #e gerando os hashes dessas combinações.
-
 num_comb = 1000000
 start = time.time()
 for i in range(1, len(funcoes)+1):
@@ -127,10 +126,14 @@ for i in range(1, len(funcoes)+1):
         h_xxhash.calcular_hash(codigo)
         h_md5.calcular_hash(codigo)
 
+        #Atualinzando número de combinações e verificando se
+        #mais combinações ainda precisam ser realizadas
         num_comb -= 1
         if(num_comb == 0):
             break
 
+        #Atualinzando intervalo de tempo desde o último salvamento dos 
+        #dados em arquivos e verificando se devemos salvar novamente os dados atualizados
         end = time.time()
         if(end - start >= 600):
             h_crc32.salvar_dados("saida/CRC32.txt")
@@ -140,6 +143,7 @@ for i in range(1, len(funcoes)+1):
             h_md5.salvar_dados("saida/MD5.txt")
             start = time.time()
     
+    #Interrompendo o loop pois as combinações requisitadas já foram calculadas
     if(num_comb == 0):
         break
 
@@ -148,7 +152,3 @@ h_murmur.salvar_dados("saida/MURMUR.txt")
 h_djb2.salvar_dados("saida/DJB2.txt")
 h_xxhash.salvar_dados("saida/XXHASH.txt")
 h_md5.salvar_dados("saida/MD5.txt")
-
-
-print(len(funcoes))
-print(2**len(funcoes) - 1)
