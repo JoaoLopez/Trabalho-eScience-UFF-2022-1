@@ -48,7 +48,7 @@ class Hash():
             arq.write("}\n\n")
             arq.write("Colisões: {\n")
             for item in self.__colisoes:
-                arq.write("{0}:{1}\n".format(item))
+                arq.write("{0}\n".format(item))
             arq.write("}\n\n")
             arq.write("Qtd Colisões: {0}".format(self.__qtd_colisoes))
     
@@ -135,17 +135,29 @@ for i in range(1, len(funcoes)+1):
         #Atualinzando intervalo de tempo desde o último salvamento dos 
         #dados em arquivos e verificando se devemos salvar novamente os dados atualizados
         end = time.time()
-        if(end - start >= 600):
+        if(end - start >= 1200):
+            print("Salvando dados em arquivo...")
+            print("Qtd combinações restantes:", num_comb)
+
             h_crc32.salvar_dados("saida/CRC32.txt")
             h_murmur.salvar_dados("saida/MURMUR.txt")
             h_djb2.salvar_dados("saida/DJB2.txt")
             h_xxhash.salvar_dados("saida/XXHASH.txt")
             h_md5.salvar_dados("saida/MD5.txt")
+            
+            print("Tempo gasto para salvar dados:", time.time() - start - 1200)
+            
             start = time.time()
+            
+            print("Voltando a processar...")
+            
     
     #Interrompendo o loop pois as combinações requisitadas já foram calculadas
     if(num_comb == 0):
         break
+
+print("Salvando dados em arquivo...")
+print("Qtd combinações restantes:", num_comb)
 
 h_crc32.salvar_dados("saida/CRC32.txt")
 h_murmur.salvar_dados("saida/MURMUR.txt")
