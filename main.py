@@ -8,8 +8,8 @@ class Hash():
     def __init__(self, funcao_hash):
         self.__funcao_hash = funcao_hash
         self.__qtd_colisoes = 0
-        self.__hist = {}
-        self.__colisoes = {}
+        self.__hist = set()
+        self.__colisoes = set()
         self.__tempos = {}
     
     def calcular_hash(self, codigo):
@@ -22,12 +22,9 @@ class Hash():
 
         hash = self.__funcao_hash(codigo)
         if(hash in self.__hist):
-            if(hash in self.__colisoes):
-                self.__colisoes[hash].append(codigo)
-            else:
-                self.__colisoes[hash] = [codigo, self.__hist[hash]]
+            self.__colisoes.add(hash)
             self.__qtd_colisoes += 1
-        self.__hist[hash] = codigo
+        self.__hist.add(hash)
         
         return tempo, hash
 
@@ -38,12 +35,12 @@ class Hash():
                 arq.write("{0}:{1}\n".format(chave, self.__tempos[chave]))
             arq.write("}\n\n")
             arq.write("Histórico: {\n")
-            for chave in self.__hist:
-                arq.write("{0}:{1}\n".format(chave, self.__hist[chave]))
+            for item in self.__hist:
+                arq.write("{0}\n".format(item))
             arq.write("}\n\n")
             arq.write("Colisões: {\n")
-            for chave in self.__colisoes:
-                arq.write("{0}:{1}\n".format(chave, self.__colisoes[chave]))
+            for item in self.__colisoes:
+                arq.write("{0}:{1}\n".format(item))
             arq.write("}\n\n")
             arq.write("Qtd Colisões: {0}".format(self.__qtd_colisoes))
     
